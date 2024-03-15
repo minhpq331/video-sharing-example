@@ -41,6 +41,7 @@ export class ApiAuthController {
       throw new InternalServerErrorException();
     }
     return {
+      id: user._id.toHexString(),
       email: user.email,
     };
   }
