@@ -3,7 +3,9 @@ import { ApiModule } from './api/api.module';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApiModule);
+  const app = await NestFactory.create(ApiModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  });
   app.enableCors();
 
   const port = await (await app.resolve(ConfigService)).getOrThrow<number>('port', { infer: true });

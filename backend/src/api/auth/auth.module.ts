@@ -1,29 +1,11 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtModule } from '@nestjs/jwt';
-import { UsersModule } from '../users/users.module';
 import { ApiAuthController } from './auth.controller';
+import { UserModule } from 'src/common/user/user.module';
 import { ApiAuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
-import { jwtConstants } from './constants';
 
 @Module({
-  imports: [
-    UsersModule,
-    JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '3600s' },
-    }),
-  ],
-  providers: [
-    AuthService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
-  controllers: [AuthController],
-  exports: [AuthService],
+  imports: [UserModule],
+  providers: [ApiAuthGuard],
+  controllers: [ApiAuthController],
 })
 export class ApiAuthModule {}

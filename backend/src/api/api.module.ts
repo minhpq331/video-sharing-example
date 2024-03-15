@@ -5,24 +5,26 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from 'src/config/configuration';
 import { BullModule } from '@nestjs/bull';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ApiAuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('database.uri'),
       }),
-      inject: [ConfigService],
     }),
     BullModule.forRootAsync({
-      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         redis: configService.get<string>('redis.uri'),
       }),
-      inject: [ConfigService],
     }),
+
+    // Application module
+    ApiAuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

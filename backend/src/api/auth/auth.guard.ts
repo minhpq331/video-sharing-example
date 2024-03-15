@@ -7,8 +7,8 @@ import { TokenPayloadDto } from 'src/common/user/dto/token-payload.dto';
 @Injectable()
 export class ApiAuthGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
