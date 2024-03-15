@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { LoginDto } from 'src/common/user/dto/login.dto';
-import { UserService } from 'src/common/user/user.service';
-import { RegisterDto } from 'src/common/user/dto/register.dto';
+import { LoginDto } from '../../common/user/dto/login.dto';
+import { UserService } from '../../common/user/user.service';
+import { RegisterDto } from '../../common/user/dto/register.dto';
 import { ApiAuthGuard } from './auth.guard';
 
 @Controller('auth')

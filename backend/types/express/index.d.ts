@@ -1,4 +1,4 @@
-import { TokenPayloadDto } from 'src/common/user/dto/token-payload.dto';
+import { TokenPayloadDto } from '../src/common/user/dto/token-payload.dto';
 
 declare global {
   namespace Express {

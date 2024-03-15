@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
-import { TokenPayloadDto } from 'src/common/user/dto/token-payload.dto';
+import { TokenPayloadDto } from '../../common/user/dto/token-payload.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -35,6 +35,6 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    return this.userModel.findById(id).exec();
+    return this.userModel.findById(id);
   }
 }

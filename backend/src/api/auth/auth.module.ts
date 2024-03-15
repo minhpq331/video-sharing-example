@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ApiAuthController } from './auth.controller';
-import { UserModule } from 'src/common/user/user.module';
+import { UserModule } from '../../common/user/user.module';
 import { ApiAuthGuard } from './auth.guard';
 
 @Module({
