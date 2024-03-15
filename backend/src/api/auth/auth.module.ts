@@ -7,5 +7,6 @@ import { ApiAuthGuard } from './auth.guard';
   imports: [UserModule],
   providers: [ApiAuthGuard],
   controllers: [ApiAuthController],
+  exports: [ApiAuthGuard],
 })
 export class ApiAuthModule {}
