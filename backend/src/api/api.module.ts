@@ -9,6 +9,7 @@ import { ApiVideoModule } from './video/video.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { NotificationModule } from '../common/notification/notification.module';
 import { ApiWebsocketGateway } from './websocket/websocket.gateway';
+import { WebsocketModule } from '../common/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ApiWebsocketGateway } from './websocket/websocket.gateway';
 
     // Application module
     NotificationModule,
+    WebsocketModule,
     ApiAuthModule,
     ApiVideoModule,
   ],

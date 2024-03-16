@@ -3,7 +3,7 @@ import { TokenPayloadDto } from '../user/dto/token-payload.dto';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Video } from './schema/video.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import * as ytdl from 'ytdl-core';
 import { ListVideoDto } from './dto/list-video.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -24,13 +24,13 @@ export class VideoService {
       url: videoInfo.videoDetails.video_url,
       embed_url: videoInfo.videoDetails.embed.iframeUrl,
       thumbnail: videoInfo.videoDetails.thumbnails?.[0]?.url || null,
-      author_id: user.sub,
+      author_id: new Types.ObjectId(user.sub),
     });
     video = await video.save();
 
     this.eventEmitter.emit(EVENT_VIDEO_CREATED, video);
 
-    return video;
+    return video.populate('author');
   }
 
   async list(query: ListVideoDto) {
@@ -41,5 +41,9 @@ export class VideoService {
       .skip((page - 1) * limit)
       .limit(limit)
       .exec();
+  }
+
+  async findById(id: string) {
+    return this.videoModel.findById(id).populate('author');
   }
 }
