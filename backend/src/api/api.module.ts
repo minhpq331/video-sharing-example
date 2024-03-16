@@ -6,9 +6,12 @@ import { BullModule } from '@nestjs/bull';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ApiAuthModule } from './auth/auth.module';
 import { ApiVideoModule } from './video/video.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { NotificationModule } from '../common/notification/notification.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -24,8 +27,8 @@ import { ApiVideoModule } from './video/video.module';
     }),
 
     // Application module
+    NotificationModule,
     ApiAuthModule,
-
     ApiVideoModule,
   ],
   controllers: [ApiController],

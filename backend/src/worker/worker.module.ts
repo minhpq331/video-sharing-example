@@ -3,10 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bull';
-import { NotificationConsumer } from './notification/notification.consumer';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { WorkerNotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
@@ -22,8 +24,8 @@ import { NotificationConsumer } from './notification/notification.consumer';
     }),
 
     // Application module
+    WorkerNotificationModule,
   ],
-  providers: [NotificationConsumer],
 })
 export class WorkerModule implements OnModuleInit {
   private readonly logger = new Logger(WorkerModule.name);
