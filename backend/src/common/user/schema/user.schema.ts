@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { compare, hashSync } from 'bcrypt';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 const HASH_ROUND = 10;
 
@@ -10,6 +10,8 @@ export type UserDocument = HydratedDocument<User>;
   timestamps: true,
 })
 export class User {
+  _id: Types.ObjectId;
+
   @Prop({
     required: true,
     unique: true,
@@ -23,6 +25,13 @@ export class User {
 
   async checkPassword(password: string): Promise<boolean> {
     return compare(password, this.password);
+  }
+
+  transform() {
+    return {
+      id: this._id.toHexString(),
+      email: this.email,
+    };
   }
 }
 

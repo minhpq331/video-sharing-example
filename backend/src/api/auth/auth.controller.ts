@@ -40,9 +40,6 @@ export class ApiAuthController {
     if (!user) {
       throw new InternalServerErrorException();
     }
-    return {
-      id: user._id.toHexString(),
-      email: user.email,
-    };
+    return user.transform();
   }
 }

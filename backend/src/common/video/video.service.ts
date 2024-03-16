@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Video } from './schema/video.schema';
 import { Model } from 'mongoose';
 import * as ytdl from 'ytdl-core';
+import { ListVideoDto } from './dto/list-video.dto';
 
 @Injectable()
 export class VideoService {
@@ -21,5 +22,15 @@ export class VideoService {
       author_id: user.sub,
     });
     return video.save();
+  }
+
+  async list(query: ListVideoDto) {
+    const { page = 1, limit = 10 } = query;
+    return this.videoModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
   }
 }

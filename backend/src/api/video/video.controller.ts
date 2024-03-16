@@ -1,8 +1,9 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { VideoService } from '../../common/video/video.service';
 import { Request } from 'express';
 import { CreateVideoDto } from '../../common/video/dto/create-video.dto';
 import { ApiAuthGuard } from '../auth/auth.guard';
+import { ListVideoDto } from '../../common/video/dto/list-video.dto';
 
 @Controller('videos')
 export class ApiVideoController {
@@ -15,7 +16,16 @@ export class ApiVideoController {
   @UseGuards(ApiAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
-  async register(@Req() req: Request, @Body() createVideoDto: CreateVideoDto) {
-    return await this.videoService.create(req.user, createVideoDto);
+  async create(@Req() req: Request, @Body() createVideoDto: CreateVideoDto) {
+    const video = await this.videoService.create(req.user, createVideoDto);
+    return video.transform();
+  }
+
+  // get videos with pagination
+  @UseGuards(ApiAuthGuard)
+  @Get('/')
+  async list(@Query() query: ListVideoDto) {
+    const videos = await this.videoService.list(query);
+    return videos.map((video) => video.transform());
   }
 }

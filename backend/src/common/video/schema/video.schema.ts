@@ -7,6 +7,8 @@ export type VideoDocument = HydratedDocument<Video>;
   timestamps: true,
 })
 export class Video {
+  _id: Types.ObjectId;
+
   @Prop()
   title: string;
 
@@ -24,6 +26,24 @@ export class Video {
 
   @Prop()
   author_id: Types.ObjectId;
+
+  @Prop()
+  createdAt?: Date;
+
+  @Prop()
+  updatedAt?: Date;
+
+  transform() {
+    return {
+      id: this._id.toHexString(),
+      title: this.title,
+      description: this.description,
+      url: this.url,
+      embed_url: this.embed_url,
+      thumbnail: this.thumbnail,
+      created_at: this.createdAt,
+    };
+  }
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
