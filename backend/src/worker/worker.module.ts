@@ -1,11 +1,9 @@
-import { Module } from '@nestjs/common';
-import { ApiController } from './api.controller';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '../config/configuration';
-import { BullModule } from '@nestjs/bull';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ApiAuthModule } from './auth/auth.module';
-import { ApiVideoModule } from './video/video.module';
+import { BullModule } from '@nestjs/bull';
+import { NotificationConsumer } from './notification/notification.consumer';
 
 @Module({
   imports: [
@@ -24,10 +22,12 @@ import { ApiVideoModule } from './video/video.module';
     }),
 
     // Application module
-    ApiAuthModule,
-
-    ApiVideoModule,
   ],
-  controllers: [ApiController],
+  providers: [NotificationConsumer],
 })
-export class ApiModule {}
+export class WorkerModule implements OnModuleInit {
+  private readonly logger = new Logger(WorkerModule.name);
+  onModuleInit() {
+    this.logger.log('Worker started with pid: ' + process.pid);
+  }
+}
