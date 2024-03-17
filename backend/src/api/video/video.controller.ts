@@ -22,7 +22,6 @@ export class ApiVideoController {
   }
 
   // get videos with pagination
-  @UseGuards(ApiAuthGuard)
   @Get('/')
   async list(@Query() query: ListVideoDto) {
     const videos = await this.videoService.list(query);
