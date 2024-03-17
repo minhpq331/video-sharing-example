@@ -323,7 +323,7 @@ export default Vue.extend({
   font-size: 0.9rem;
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: flex-end;
 }
 
 .view-more-btn:focus,
