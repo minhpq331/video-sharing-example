@@ -5,13 +5,32 @@
       <div class="container">
         <!-- Logo -->
         <a class="navbar-brand" href="#">
-          <img src="/logo.png" alt="Logo" height="30" />
+          <img
+            src="https://nuxt.com/assets/design-kit/icon-black.svg"
+            width="30"
+            height="30"
+            class="d-inline-block align-top"
+            alt=""
+          />
+          Funny Youtube
         </a>
 
         <!-- Login/Register Button -->
-        <button class="btn btn-primary ml-auto" @click="openModal">
-          Login/Register
-        </button>
+
+        <div v-if="$auth.loggedIn" class="ml-2">
+          <span class="navbar-text mr-2">
+            Welcome, {{ $auth.user?.email }}
+          </span>
+          <button class="btn btn-primary mr-2" @click="openShareModal">
+            Share a Video
+          </button>
+          <button class="btn btn-secondary" @click="logout">Logout</button>
+        </div>
+        <div v-else class="ml-2">
+          <button class="btn btn-primary ml-auto" @click="openModal">
+            Login/Register
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -45,6 +64,7 @@
               <div class="form-group">
                 <label for="email">Email address</label>
                 <input
+                  v-model="email"
                   type="email"
                   class="form-control"
                   id="email"
@@ -55,6 +75,7 @@
               <div class="form-group">
                 <label for="password">Password</label>
                 <input
+                  v-model="password"
                   type="password"
                   class="form-control"
                   id="password"
@@ -80,9 +101,43 @@
       </div>
     </div>
 
+    <!-- Share Modal -->
+    <div
+      class="modal"
+      tabindex="-1"
+      role="dialog"
+      :class="{ 'd-block': showShareModal }"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Share Video</h5>
+            <button
+              type="button"
+              class="close"
+              aria-label="Close"
+              @click="closeShareModal"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="url">YouTube URL</label>
+              <input type="text" class="form-control" id="url" v-model="url" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="shareVideo">
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Shared Videos List -->
     <div class="container mt-4">
-      <h2>Shared Videos</h2>
       <div v-for="(video, index) in videoList" :key="index" class="row mb-3">
         <!-- Left 1/3 width on desktop, full width on mobile: YouTube Player -->
         <div class="col-md-5 col-12 mb-md-0 mb-3">
@@ -127,106 +182,34 @@
 </template>
 
 <script lang="ts">
+import { NuxtSocket } from 'nuxt-socket-io'
 import Vue from 'vue'
 
 export default Vue.extend({
   name: 'IndexPage',
+  async asyncData({ $axios }) {
+    const { data } = await $axios.get('/videos')
+    return { videoList: data }
+  },
   data() {
     return {
       showModal: false,
-      videoList: [
-        {
-          id: '65f57ac888a595d62f51e9c2',
-          title:
-            'CHƯA QUÊN NGƯỜI YÊU CŨ | HÀ NHI X HỨA KIM TUYỀN | OFFICIAL MUSIC VIDEO',
-          description:
-            'Bài hát: Chưa Quên Người Yêu Cũ | Hà Nhi x \nCHƯA QUÊN NGƯỜI YÊU CŨ - HÀ NHI OFFICIAL MV \n\nSáng tác : Hứa Kim Tuyền\nPhối khí : Lê hữu minh \nMix master : Bố Thỏ Heo \nRecording : Phạm Nguyên Studio \nManager : Tiến Trương \nMUA : Dương Hữu Nghĩa \nHair : Hương Đào \nstylist : Bin Nguyễn \nAssistant : Nguyễn Thiện Nhân , Cá Sấu \nCamera Op : Trương Hồ Quang Huy \nThiết kế : Anh Vương \nLighting : Nhàn Nguyễn \nEquipment : BLL media \n\n\n\nTheo dõi Nhi qua những kênh mạng xã hội dưới đây nhé: \n► Facebook: https://www.facebook.com/xu.milo\n► Fanpage: https://www.facebook.com/HaNhiOfficial/\n► Instagram: https://www.instagram.com/hanhiidol/?hl=vi\n► Youtube: http://popsww.com/hanhi\n\nMọi liên hệ về BOOKING mọi người vui lòng liên lạc theo số điện thoại và địa chỉ dưới đây:\n📷• Business & Show Bookings: Mr. Tio : 0866777868\n📷• Email: ongmatproduction@gmail.com  \nTHANKSSSS!\n\n#hanhi \n#huakimtuyen\n#chuaquennguoiyeucu\n#official \n#mv',
-          url: 'https://www.youtube.com/watch?v=8Q4_O4A2Ux4',
-          embed_url: 'https://www.youtube.com/embed/8Q4_O4A2Ux4',
-          thumbnail:
-            'https://i.ytimg.com/vi/8Q4_O4A2Ux4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBf5h0LTHO-lqfLPiT6PtoF27wmaQ',
-          created_at: '2024-03-16T10:56:08.742Z',
-          author_id: '65f54f66acd8da07bc46dc2c',
-          author: {
-            id: '65f54f66acd8da07bc46dc2c',
-            email: 'test@example.com',
-          },
-          showMore: undefined,
-        },
-        {
-          id: '65f57aa788a595d62f51e9bf',
-          title:
-            'CHƯA QUÊN NGƯỜI YÊU CŨ | HÀ NHI X HỨA KIM TUYỀN | OFFICIAL MUSIC VIDEO',
-          description:
-            'Bài hát: Chưa Quên Người Yêu Cũ | Hà Nhi x \nCHƯA QUÊN NGƯỜI YÊU CŨ - HÀ NHI OFFICIAL MV \n\nSáng tác : Hứa Kim Tuyền\nPhối khí : Lê hữu minh \nMix master : Bố Thỏ Heo \nRecording : Phạm Nguyên Studio \nManager : Tiến Trương \nMUA : Dương Hữu Nghĩa \nHair : Hương Đào \nstylist : Bin Nguyễn \nAssistant : Nguyễn Thiện Nhân , Cá Sấu \nCamera Op : Trương Hồ Quang Huy \nThiết kế : Anh Vương \nLighting : Nhàn Nguyễn \nEquipment : BLL media \n\n\n\nTheo dõi Nhi qua những kênh mạng xã hội dưới đây nhé: \n► Facebook: https://www.facebook.com/xu.milo\n► Fanpage: https://www.facebook.com/HaNhiOfficial/\n► Instagram: https://www.instagram.com/hanhiidol/?hl=vi\n► Youtube: http://popsww.com/hanhi\n\nMọi liên hệ về BOOKING mọi người vui lòng liên lạc theo số điện thoại và địa chỉ dưới đây:\n📷• Business & Show Bookings: Mr. Tio : 0866777868\n📷• Email: ongmatproduction@gmail.com  \nTHANKSSSS!\n\n#hanhi \n#huakimtuyen\n#chuaquennguoiyeucu\n#official \n#mv',
-          url: 'https://www.youtube.com/watch?v=8Q4_O4A2Ux4',
-          embed_url: 'https://www.youtube.com/embed/8Q4_O4A2Ux4',
-          thumbnail:
-            'https://i.ytimg.com/vi/8Q4_O4A2Ux4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBf5h0LTHO-lqfLPiT6PtoF27wmaQ',
-          created_at: '2024-03-16T10:55:35.560Z',
-          author_id: '65f54f66acd8da07bc46dc2c',
-          author: {
-            id: '65f54f66acd8da07bc46dc2c',
-            email: 'test@example.com',
-          },
-          showMore: undefined,
-        },
-        {
-          id: '65f5797188a595d62f51e9bb',
-          title:
-            'CHƯA QUÊN NGƯỜI YÊU CŨ | HÀ NHI X HỨA KIM TUYỀN | OFFICIAL MUSIC VIDEO',
-          description:
-            'Bài hát: Chưa Quên Người Yêu Cũ | Hà Nhi x \nCHƯA QUÊN NGƯỜI YÊU CŨ - HÀ NHI OFFICIAL MV \n\nSáng tác : Hứa Kim Tuyền\nPhối khí : Lê hữu minh \nMix master : Bố Thỏ Heo \nRecording : Phạm Nguyên Studio \nManager : Tiến Trương \nMUA : Dương Hữu Nghĩa \nHair : Hương Đào \nstylist : Bin Nguyễn \nAssistant : Nguyễn Thiện Nhân , Cá Sấu \nCamera Op : Trương Hồ Quang Huy \nThiết kế : Anh Vương \nLighting : Nhàn Nguyễn \nEquipment : BLL media \n\n\n\nTheo dõi Nhi qua những kênh mạng xã hội dưới đây nhé: \n► Facebook: https://www.facebook.com/xu.milo\n► Fanpage: https://www.facebook.com/HaNhiOfficial/\n► Instagram: https://www.instagram.com/hanhiidol/?hl=vi\n► Youtube: http://popsww.com/hanhi\n\nMọi liên hệ về BOOKING mọi người vui lòng liên lạc theo số điện thoại và địa chỉ dưới đây:\n📷• Business & Show Bookings: Mr. Tio : 0866777868\n📷• Email: ongmatproduction@gmail.com  \nTHANKSSSS!\n\n#hanhi \n#huakimtuyen\n#chuaquennguoiyeucu\n#official \n#mv',
-          url: 'https://www.youtube.com/watch?v=8Q4_O4A2Ux4',
-          embed_url: 'https://www.youtube.com/embed/8Q4_O4A2Ux4',
-          thumbnail:
-            'https://i.ytimg.com/vi/8Q4_O4A2Ux4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBf5h0LTHO-lqfLPiT6PtoF27wmaQ',
-          created_at: '2024-03-16T10:50:25.881Z',
-          author_id: '65f54f66acd8da07bc46dc2c',
-          author: {
-            id: '65f54f66acd8da07bc46dc2c',
-            email: 'test@example.com',
-          },
-          showMore: undefined,
-        },
-        {
-          id: '65f57923538a424a508ddcb8',
-          title:
-            'CHƯA QUÊN NGƯỜI YÊU CŨ | HÀ NHI X HỨA KIM TUYỀN | OFFICIAL MUSIC VIDEO',
-          description:
-            'Bài hát: Chưa Quên Người Yêu Cũ | Hà Nhi x \nCHƯA QUÊN NGƯỜI YÊU CŨ - HÀ NHI OFFICIAL MV \n\nSáng tác : Hứa Kim Tuyền\nPhối khí : Lê hữu minh \nMix master : Bố Thỏ Heo \nRecording : Phạm Nguyên Studio \nManager : Tiến Trương \nMUA : Dương Hữu Nghĩa \nHair : Hương Đào \nstylist : Bin Nguyễn \nAssistant : Nguyễn Thiện Nhân , Cá Sấu \nCamera Op : Trương Hồ Quang Huy \nThiết kế : Anh Vương \nLighting : Nhàn Nguyễn \nEquipment : BLL media \n\n\n\nTheo dõi Nhi qua những kênh mạng xã hội dưới đây nhé: \n► Facebook: https://www.facebook.com/xu.milo\n► Fanpage: https://www.facebook.com/HaNhiOfficial/\n► Instagram: https://www.instagram.com/hanhiidol/?hl=vi\n► Youtube: http://popsww.com/hanhi\n\nMọi liên hệ về BOOKING mọi người vui lòng liên lạc theo số điện thoại và địa chỉ dưới đây:\n📷• Business & Show Bookings: Mr. Tio : 0866777868\n📷• Email: ongmatproduction@gmail.com  \nTHANKSSSS!\n\n#hanhi \n#huakimtuyen\n#chuaquennguoiyeucu\n#official \n#mv',
-          url: 'https://www.youtube.com/watch?v=8Q4_O4A2Ux4',
-          embed_url: 'https://www.youtube.com/embed/8Q4_O4A2Ux4',
-          thumbnail:
-            'https://i.ytimg.com/vi/8Q4_O4A2Ux4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBf5h0LTHO-lqfLPiT6PtoF27wmaQ',
-          created_at: '2024-03-16T10:49:07.088Z',
-          author_id: '65f54f66acd8da07bc46dc2c',
-          author: {
-            id: '65f54f66acd8da07bc46dc2c',
-            email: 'test@example.com',
-          },
-          showMore: undefined,
-        },
-        {
-          id: '65f578c1466b4ffc1457978b',
-          title:
-            'CHƯA QUÊN NGƯỜI YÊU CŨ | HÀ NHI X HỨA KIM TUYỀN | OFFICIAL MUSIC VIDEO',
-          description:
-            'Bài hát: Chưa Quên Người Yêu Cũ | Hà Nhi x \nCHƯA QUÊN NGƯỜI YÊU CŨ - HÀ NHI OFFICIAL MV \n\nSáng tác : Hứa Kim Tuyền\nPhối khí : Lê hữu minh \nMix master : Bố Thỏ Heo \nRecording : Phạm Nguyên Studio \nManager : Tiến Trương \nMUA : Dương Hữu Nghĩa \nHair : Hương Đào \nstylist : Bin Nguyễn \nAssistant : Nguyễn Thiện Nhân , Cá Sấu \nCamera Op : Trương Hồ Quang Huy \nThiết kế : Anh Vương \nLighting : Nhàn Nguyễn \nEquipment : BLL media \n\n\n\nTheo dõi Nhi qua những kênh mạng xã hội dưới đây nhé: \n► Facebook: https://www.facebook.com/xu.milo\n► Fanpage: https://www.facebook.com/HaNhiOfficial/\n► Instagram: https://www.instagram.com/hanhiidol/?hl=vi\n► Youtube: http://popsww.com/hanhi\n\nMọi liên hệ về BOOKING mọi người vui lòng liên lạc theo số điện thoại và địa chỉ dưới đây:\n📷• Business & Show Bookings: Mr. Tio : 0866777868\n📷• Email: ongmatproduction@gmail.com  \nTHANKSSSS!\n\n#hanhi \n#huakimtuyen\n#chuaquennguoiyeucu\n#official \n#mv',
-          url: 'https://www.youtube.com/watch?v=8Q4_O4A2Ux4',
-          embed_url: 'https://www.youtube.com/embed/8Q4_O4A2Ux4',
-          thumbnail:
-            'https://i.ytimg.com/vi/8Q4_O4A2Ux4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBf5h0LTHO-lqfLPiT6PtoF27wmaQ',
-          created_at: '2024-03-16T10:47:29.495Z',
-          author_id: '65f54f66acd8da07bc46dc2c',
-          author: {
-            id: '65f54f66acd8da07bc46dc2c',
-            email: 'test@example.com',
-          },
-          showMore: undefined,
-        },
-      ],
+      showShareModal: false,
+      url: '',
+      email: '',
+      password: '',
+      videoList: [],
+      socket: undefined as any as NuxtSocket,
     }
+  },
+  mounted() {
+    this.socket = this.$nuxtSocket({
+      transports: ['websocket'],
+    })
+    /* Listen for events: */
+    this.socket.on('video.shared', (msg, cb) => {
+      this.videoList.unshift(msg.data)
+    })
   },
   methods: {
     openModal() {
@@ -235,29 +218,60 @@ export default Vue.extend({
     closeModal() {
       this.showModal = false
     },
-    register() {
-      // Make API call to register endpoint (/auth/register)
-      // Example using Axios:
-      // axios.post('/auth/register', { email: this.email, password: this.password })
-      //   .then(response => {
-      //     // Handle success
-      //   })
-      //   .catch(error => {
-      //     // Handle error
-      //   });
-      console.log('Register button clicked')
+    openShareModal() {
+      this.showShareModal = true
     },
-    login() {
-      // Make API call to login endpoint (/auth/login)
-      // Example using Axios:
-      // axios.post('/auth/login', { email: this.email, password: this.password })
-      //   .then(response => {
-      //     // Handle success
-      //   })
-      //   .catch(error => {
-      //     // Handle error
-      //   });
-      console.log('Login button clicked')
+    closeShareModal() {
+      this.showShareModal = false
+    },
+    async register() {
+      try {
+        await this.$auth.loginWith('local', {
+          url: '/auth/register',
+          data: {
+            email: this.email,
+            password: this.password,
+          },
+        })
+        // display a toast message and close the modal
+        this.$toast.success('Register successful!', { duration: 3000 })
+        this.showModal = false
+      } catch (error) {
+        // display a toast message
+        this.$toast.error('Register failed!', { duration: 3000 })
+      }
+    },
+    async login() {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            email: this.email,
+            password: this.password,
+          },
+        })
+        // display a toast message and close the modal
+        this.$toast.success('Login successful!', { duration: 3000 })
+        this.showModal = false
+      } catch (error) {
+        // display a toast message
+        this.$toast.error('Login failed!', { duration: 3000 })
+      }
+    },
+    async logout() {
+      await this.$auth.logout()
+      this.$toast.success('Logout successful!', { duration: 3000 })
+      window.location.reload()
+    },
+    async shareVideo() {
+      try {
+        await this.$axios.post('/videos', {
+          url: this.url,
+        })
+        this.$toast.success('Video shared!', { duration: 3000 })
+        this.showShareModal = false
+      } catch (error) {
+        this.$toast.error('Failed to share video!', { duration: 3000 })
+      }
     },
     toggleDescription(index: number) {
       this.$set(
@@ -290,7 +304,7 @@ export default Vue.extend({
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 1) 100%
+    rgba(255, 255, 255, 1) 70%
   );
   color: #007bff;
   /* -webkit-background-clip: text; */
@@ -302,7 +316,7 @@ export default Vue.extend({
   font-size: 0.9rem;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
 }
 
 .view-more-btn:focus,
