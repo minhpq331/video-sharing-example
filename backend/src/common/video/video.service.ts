@@ -40,6 +40,7 @@ export class VideoService {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
+      .populate('author')
       .exec();
   }
 
