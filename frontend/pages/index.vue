@@ -208,6 +208,13 @@ export default Vue.extend({
     })
     /* Listen for events: */
     this.socket.on('video.shared', (msg, cb) => {
+      // show notification and add the new video to the list
+      if (msg.data?.author_id !== this.$auth.user?.id) {
+        this.$toast.success(
+          `User ${msg.data?.author?.email} has just shared a video: ${msg.data?.title}`,
+          { duration: 5000, position: 'top-right' }
+        )
+      }
       this.videoList.unshift(msg.data)
     })
   },
