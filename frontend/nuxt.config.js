@@ -92,7 +92,7 @@ export default {
     sockets: [
       {
         name: 'main',
-        url: process.env.API_BASE_URL,
+        url: process.env.WEBSOCKET_URL,
       },
     ],
   },
