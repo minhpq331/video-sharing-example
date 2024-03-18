@@ -12,8 +12,6 @@ COPY --chown=node:node . .
 RUN npm run build \
     && npm prune --omit=dev
 
-# ---
-
 FROM node:20-alpine
 
 ENV NODE_ENV production
