@@ -31,6 +31,7 @@ services:
 
   worker:
     image: minhpq331/video-sharing-example-backend:${IMAGE_TAG}
+    command: node dist/main-worker.js
     environment:
       - PORT=3000
       - DATABASE_URI=mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongodb:27017/video-sharing-example?authSource=admin
