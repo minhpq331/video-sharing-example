@@ -4,21 +4,17 @@ import { ConfigService } from '@nestjs/config';
 
 describe('WebsocketEmitter', () => {
   let websocketEmitter: WebsocketEmitter;
-  let configService: ConfigService;
 
   beforeEach(async () => {
-    configService = new ConfigService({
-      redis: {
-        uri: 'redis://localhost:6379',
-      },
-    });
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WebsocketEmitter,
         {
           provide: ConfigService,
-          useValue: configService,
+          useValue: {
+            get: jest.fn(),
+            getOrThrow: jest.fn(),
+          },
         },
       ],
     }).compile();
