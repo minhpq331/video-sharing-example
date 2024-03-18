@@ -5,7 +5,13 @@ import { RedisIoAdapter } from './common/websocket/redis-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiModule);
-  app.enableCors();
+  app.enableCors({
+    preflightContinue: false,
+    origin: true,
+    methods: 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
   const configService = await app.resolve(ConfigService);
 
   const redisIoAdapter = new RedisIoAdapter(app);
