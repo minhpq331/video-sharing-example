@@ -7,7 +7,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'frontend',
+    title: 'Video Sharing Example',
     htmlAttrs: {
       lang: 'en',
     },
@@ -100,8 +100,18 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
-  server: {
-    host: '0.0.0.0',
-    port: 3001,
+  publicRuntimeConfig: {
+    axios: {
+      browserBaseURL: process.env.API_BASE_URL,
+    },
+    io: {
+      // module options
+      sockets: [
+        {
+          name: 'main',
+          url: process.env.WEBSOCKET_URL,
+        },
+      ],
+    },
   },
 }
