@@ -1,9 +1,9 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
 
   // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
+  target: 'server',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -92,7 +92,7 @@ export default {
     sockets: [
       {
         name: 'main',
-        url: 'http://localhost:3000',
+        url: process.env.API_BASE_URL,
       },
     ],
   },
@@ -104,14 +104,10 @@ export default {
     axios: {
       browserBaseURL: process.env.API_BASE_URL,
     },
-    io: {
-      // module options
-      sockets: [
-        {
-          name: 'main',
-          url: process.env.WEBSOCKET_URL,
-        },
-      ],
+  },
+  privateRuntimeConfig: {
+    axios: {
+      baseURL: process.env.API_BASE_URL,
     },
   },
 }
