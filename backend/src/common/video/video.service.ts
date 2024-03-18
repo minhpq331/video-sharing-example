@@ -45,6 +45,6 @@ export class VideoService {
   }
 
   async findById(id: string) {
-    return this.videoModel.findById(id).populate('author');
+    return this.videoModel.findById(id).populate('author').exec();
   }
 }

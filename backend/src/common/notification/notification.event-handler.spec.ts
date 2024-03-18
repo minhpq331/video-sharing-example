@@ -1,11 +1,9 @@
 import { TestBed } from '@automock/jest';
 import { NotificationEventHandler } from './notification.event-handler';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Queue } from 'bull';
 import { VideoDocument } from '../video/schema/video.schema';
 import { getQueueToken } from '@nestjs/bull';
 import { JOB_NOTIFICATION_ON_VIDEO_CREATED, QUEUE_NOTIFICATION } from '../../worker/notification/notification.constant';
-import { Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 
 describe('NotificationEventHandler', () => {
@@ -47,6 +45,7 @@ describe('NotificationEventHandler', () => {
       const error = new Error('Error adding job to queue');
       notificationQueue.add.mockRejectedValueOnce(error); // Mock rejection
       const errorSpy = jest.spyOn(notificationEventHandler['logger'], 'error');
+      errorSpy.mockImplementation(() => null);
 
       // Act
       await notificationEventHandler.handleVideoCreatedEvent(video);
