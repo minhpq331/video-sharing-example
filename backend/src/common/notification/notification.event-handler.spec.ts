@@ -13,7 +13,7 @@ describe('NotificationEventHandler', () => {
   beforeAll(() => {
     const { unit, unitRef } = TestBed.create(NotificationEventHandler)
       .mock(getQueueToken(QUEUE_NOTIFICATION))
-      .using(jest.fn().mockImplementation(() => ({ add: jest.fn() })))
+      .using({ add: jest.fn() })
       .compile();
 
     notificationEventHandler = unit;
@@ -29,6 +29,8 @@ describe('NotificationEventHandler', () => {
       // Arrange
       const video: VideoDocument = { _id: new Types.ObjectId() } as any; // Mocked VideoDocument
       notificationQueue.add.mockResolvedValueOnce(null as any); // Mock add method
+      const logSpy = jest.spyOn(notificationEventHandler['logger'], 'log');
+      logSpy.mockImplementation(() => null);
 
       // Act
       await notificationEventHandler.handleVideoCreatedEvent(video);
